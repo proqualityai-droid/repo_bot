@@ -915,5 +915,14 @@ if __name__ == "__main__":
     if bot_token:
         start_bot_listener(bot_token)
 
-    reporter = TelegramReporter()
-    reporter.report_channel()
+    # By default do NOT run the interactive reporter loop in containerized environments.
+    # Set the environment variable `RUN_REPORTER=1` (or true/yes) to enable it.
+    run_reporter_env = os.environ.get("RUN_REPORTER", "0").strip().lower()
+    if run_reporter_env in ("1", "true", "yes"):
+        try:
+            reporter = TelegramReporter()
+            reporter.report_channel()
+        except Exception as exc:
+            print(f"{lrd}[!] Reporter failed to start: {exc}")
+    else:
+        print(f"{lrd}[+] RUN_REPORTER not enabled — running bot listener only.")
