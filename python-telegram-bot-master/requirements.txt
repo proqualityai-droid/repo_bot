@@ -1,0 +1,3 @@
+telethon
+prettytable
+colorama
